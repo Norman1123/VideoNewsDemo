@@ -8,10 +8,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.feicuiedu.videonews.TestActivity">
+    tools:context="com.foxconn.norman.videonews.TestActivity">
 
-    <TextureView
-        android:id="@+id/textureView"
+    <com.foxconn.norman.videoplayer.part.SimpleVideoPlayer
+        android:id="@+id/test_svp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="300dp"
+        android:background="@android:color/black">
+
+    </com.foxconn.norman.videoplayer.part.SimpleVideoPlayer>
 </RelativeLayout>
