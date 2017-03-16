@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,19 @@ import android.widget.EditText;
 import com.foxconn.norman.videonews.Commons.ToastUtils;
 import com.foxconn.norman.videonews.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2016/12/21 0021.
@@ -52,8 +62,44 @@ public class RegisterFragment extends DialogFragment {
             ToastUtils.showShort(R.string.username_or_password_can_not_be_null);
             return;
         }
-
         // TODO: 2017/3/15 0015 注册的网络请求
+        JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put("username",username);
+            jsonObject.put("password",password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String json=jsonObject.toString();
+        RequestBody requestBody=RequestBody.create(null,json);
+        OkHttpClient client=new OkHttpClient();
+        Request request=new Request.Builder()
+                .post(requestBody)
+                .url("https://api.bmob.cn/1/users")
+                .addHeader("X-Bmob-Application-Id", "623aaef127882aed89b9faa348451da3")
+                .addHeader("X-Bmob-REST-API-Key", "c00104962a9b67916e8cbcb9157255de")
+                .addHeader("Content-Type","application/json")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //超时或没有网络连接
+                Log.e("okhttp","超时或没有网络连接");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+               // 判断是否请求成功（响应码=200 -- 299）
+                if (response.isSuccessful()){
+              //拿到响应体（解析，并展示）
+                    Log.e("okhttp","请求成功");
+                }else{
+                    Log.e("okhttp","请求失败,响应码 = " +response.code());
+                    Log.e("okhttp","请求失败,响应体 = " +response.body().string());
+                }
+            }
+        });
+
     }
 
 }
