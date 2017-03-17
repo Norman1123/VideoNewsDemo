@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
+import com.foxconn.norman.videonews.Bobmapi.other.BombClient;
 import com.foxconn.norman.videonews.Commons.ToastUtils;
 import com.foxconn.norman.videonews.R;
 
@@ -64,20 +65,8 @@ public class LoginFragment extends DialogFragment{
         }
 
         // TODO: 2017/3/15 0015 登录的网络请求
-        OkHttpClient client=new OkHttpClient();
-        Request request=new Request.Builder()
-                .get()
-                .url("https://api.bmob.cn/1/login" + "?"
-                        +"username=" + username + "&"
-                        +"password=" + password)
-                //用于让bomb服务器，区分是哪一个应用
-                .addHeader("X-Bmob-Application-Id", "623aaef127882aed89b9faa348451da3")
-                //用于授权
-                .addHeader("X-Bmob-REST-API-Key", "c00104962a9b67916e8cbcb9157255de")
-                //请求和响应统一使用json格式
-                .addHeader("Content-Type","application/json")
-                .build();
-        client.newCall(request).enqueue(new Callback() {
+        Call call= BombClient.getBombClient().LogIn(username,password);
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("okhttp","连接失败");

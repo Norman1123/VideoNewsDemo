@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.foxconn.norman.videonews.Bobmapi.other.BombClient;
 import com.foxconn.norman.videonews.Commons.ToastUtils;
 import com.foxconn.norman.videonews.R;
 
@@ -63,24 +64,8 @@ public class RegisterFragment extends DialogFragment {
             return;
         }
         // TODO: 2017/3/15 0015 注册的网络请求
-        JSONObject jsonObject=new JSONObject();
-        try {
-            jsonObject.put("username",username);
-            jsonObject.put("password",password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String json=jsonObject.toString();
-        RequestBody requestBody=RequestBody.create(null,json);
-        OkHttpClient client=new OkHttpClient();
-        Request request=new Request.Builder()
-                .post(requestBody)
-                .url("https://api.bmob.cn/1/users")
-                .addHeader("X-Bmob-Application-Id", "623aaef127882aed89b9faa348451da3")
-                .addHeader("X-Bmob-REST-API-Key", "c00104962a9b67916e8cbcb9157255de")
-                .addHeader("Content-Type","application/json")
-                .build();
-        client.newCall(request).enqueue(new Callback() {
+        Call call= BombClient.getBombClient().register(username,password);
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 //超时或没有网络连接
