@@ -14,8 +14,10 @@ import android.widget.EditText;
 
 
 import com.foxconn.norman.videonews.Bobmapi.other.BombClient;
+import com.foxconn.norman.videonews.Bobmapi.result.UserResult;
 import com.foxconn.norman.videonews.Commons.ToastUtils;
 import com.foxconn.norman.videonews.R;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -23,11 +25,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Callback;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Created by Administrator on 2017/3/15 0015.
@@ -65,22 +68,21 @@ public class LoginFragment extends DialogFragment{
         }
 
         // TODO: 2017/3/15 0015 登录的网络请求
-        Call call= BombClient.getBombClient().LogIn(username,password);
-        call.enqueue(new Callback() {
+       Call<UserResult> call=BombClient.getBombClient().getUserApi().Login(username,password);
+        call.enqueue(new Callback<UserResult>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("okhttp","连接失败");
+            public void onResponse(Call<UserResult> call, retrofit2.Response<UserResult> response) {
+                UserResult userResult=response.body();
+                ToastUtils.showShort("注册用户名为："+userResult.getUsername());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()){
-                    Log.e("okhttp","登陆成功");
-                }else{
-                    Log.e("okhttp","登陆失败");
-                }
+            public void onFailure(Call<UserResult> call, Throwable t) {
+                ToastUtils.showShort("登录失败");
             }
         });
+
+
     }
 
     @Override

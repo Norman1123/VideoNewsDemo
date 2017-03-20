@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.foxconn.norman.videonews.Bobmapi.entity.UserEntity;
 import com.foxconn.norman.videonews.Bobmapi.other.BombClient;
 import com.foxconn.norman.videonews.Bobmapi.result.UserResult;
 import com.foxconn.norman.videonews.Commons.ToastUtils;
@@ -25,12 +26,12 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Created by Administrator on 2016/12/21 0021.
@@ -66,28 +67,22 @@ public class RegisterFragment extends DialogFragment {
             return;
         }
         // TODO: 2017/3/15 0015 注册的网络请求
-        Call call= BombClient.getBombClient().register(username,password);
-        call.enqueue(new Callback() {
+        Call<UserResult> call=BombClient.getBombClient().getUserApi().Register(new UserEntity(username,password));
+        call.enqueue(new Callback<UserResult>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                //超时或没有网络连接
-                Log.e("okhttp","超时或没有网络连接");
+            public void onResponse(Call<UserResult> call, retrofit2.Response<UserResult> response) {
+                UserResult userResult=response.body();
+                ToastUtils.showShort("注册ID："+userResult.getObjectId());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-               // 判断是否请求成功（响应码=200 -- 299）
-                if (response.isSuccessful()){
-              //拿到响应体（解析，并展示）
-                    String json=response.body().string();
-                    UserResult userResult=new Gson().fromJson(json,UserResult.class);
-                    Log.e("okhttp","请求成功"+userResult.getCreatedAt());
-                }else{
-                    Log.e("okhttp","请求失败,响应码 = " +response.code());
-                    Log.e("okhttp","请求失败,响应体 = " +response.body().string());
-                }
+            public void onFailure(Call<UserResult> call, Throwable t) {
+                ToastUtils.showShort("注册失败");
             }
         });
+
+
+
 
     }
 

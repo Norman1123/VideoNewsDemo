@@ -7,7 +7,25 @@ package com.foxconn.norman.videonews.Bobmapi.result;
 public class UserResult {
     private String createdAt;
     private String objectId;
+    private String username;
+    private String updatedAt;
     private String sessionToken;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     public String getCreatedAt() {
         return createdAt;

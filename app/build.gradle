@@ -37,5 +37,8 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     //Gson
     compile 'com.google.code.gson:gson:2.8.0'
-
+    //Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    //converter-gson 转化器
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
 }
