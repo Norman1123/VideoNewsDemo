@@ -13,8 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.foxconn.norman.videonews.Bobmapi.other.BombClient;
+import com.foxconn.norman.videonews.Bobmapi.result.UserResult;
 import com.foxconn.norman.videonews.Commons.ToastUtils;
 import com.foxconn.norman.videonews.R;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,7 +79,9 @@ public class RegisterFragment extends DialogFragment {
                // 判断是否请求成功（响应码=200 -- 299）
                 if (response.isSuccessful()){
               //拿到响应体（解析，并展示）
-                    Log.e("okhttp","请求成功");
+                    String json=response.body().string();
+                    UserResult userResult=new Gson().fromJson(json,UserResult.class);
+                    Log.e("okhttp","请求成功"+userResult.getCreatedAt());
                 }else{
                     Log.e("okhttp","请求失败,响应码 = " +response.code());
                     Log.e("okhttp","请求失败,响应体 = " +response.body().string());

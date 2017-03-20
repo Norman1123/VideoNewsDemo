@@ -1,5 +1,8 @@
 package com.foxconn.norman.videonews.Bobmapi.other;
 
+import com.foxconn.norman.videonews.Bobmapi.entity.UserEntity;
+import com.google.gson.Gson;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,21 +28,22 @@ public class BombClient {
               .build();
     }
     public static BombClient getBombClient(){
-       if (bombClient!=null){
+       if (bombClient==null){
            bombClient=new BombClient();
        }
         return bombClient;
     }
     public Call register(String username, String password){
         //构建一个请求的请求体（根据服务器要求）
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("username",username);
-            jsonObject.put("password",password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String json = jsonObject.toString();
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("username",username);
+//            jsonObject.put("password",password);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        String json = jsonObject.toString();
+        String json=new Gson().toJson(new UserEntity(username,password));
 
         RequestBody requestBody = RequestBody.create(null,json);
 
