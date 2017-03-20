@@ -45,12 +45,6 @@ public class BombClient {
 
         Request request = new Request.Builder()
                 .url("https://api.bmob.cn/1/users")
-                //用于让bomb服务器，区分是哪一个应用
-                .addHeader("X-Bmob-Application-Id", "623aaef127882aed89b9faa348451da3")
-                //用于授权
-                .addHeader("X-Bmob-REST-API-Key", "c00104962a9b67916e8cbcb9157255de")
-                //请求和响应统一使用json格式
-                .addHeader("Content-Type","application/json")
                 .post(requestBody)
                 .build();
 
@@ -62,12 +56,7 @@ public class BombClient {
                 .url("https://api.bmob.cn/1/login" + "?"
                         +"username=" + username + "&"
                         +"password=" + password)
-                //用于让bomb服务器，区分是哪一个应用
-                .addHeader("X-Bmob-Application-Id", "623aaef127882aed89b9faa348451da3")
-                //用于授权
-                .addHeader("X-Bmob-REST-API-Key", "c00104962a9b67916e8cbcb9157255de")
-                //请求和响应统一使用json格式
-                .addHeader("Content-Type","application/json")
+
                 .build();
 
         return okHttpClient.newCall(request);
