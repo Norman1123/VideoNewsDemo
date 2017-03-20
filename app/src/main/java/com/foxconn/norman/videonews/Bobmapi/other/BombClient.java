@@ -20,6 +20,7 @@ public class BombClient {
       HttpLoggingInterceptor interceptor=new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
       okHttpClient=new OkHttpClient.Builder()
+              .addInterceptor(new CustomBobmHeaderInterceptor())
               .addInterceptor(interceptor)
               .build();
     }
