@@ -7,6 +7,7 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Created by Administrator on 2017/3/17 0017.
@@ -16,7 +17,11 @@ public class BombClient {
     private static BombClient bombClient;
     private OkHttpClient okHttpClient;
     private BombClient(){
-      okHttpClient=new OkHttpClient();
+      HttpLoggingInterceptor interceptor=new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+      okHttpClient=new OkHttpClient.Builder()
+              .addInterceptor(interceptor)
+              .build();
     }
     public static BombClient getBombClient(){
        if (bombClient!=null){
