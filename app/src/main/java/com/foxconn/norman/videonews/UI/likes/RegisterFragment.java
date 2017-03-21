@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.foxconn.norman.videonews.Bobmapi.entity.UserEntity;
 import com.foxconn.norman.videonews.Bobmapi.other.BombClient;
+import com.foxconn.norman.videonews.Bobmapi.result.ErrorResult;
 import com.foxconn.norman.videonews.Bobmapi.result.UserResult;
 import com.foxconn.norman.videonews.Commons.ToastUtils;
 import com.foxconn.norman.videonews.R;
@@ -71,19 +72,42 @@ public class RegisterFragment extends DialogFragment {
         call.enqueue(new Callback<UserResult>() {
             @Override
             public void onResponse(Call<UserResult> call, retrofit2.Response<UserResult> response) {
+                mBtnRegister.setVisibility(View.VISIBLE);
+                if (!response.isSuccessful()){
+                    try {
+                        String error=response.errorBody().string();
+                        ErrorResult errorResult=new Gson().fromJson(error,ErrorResult.class);
+                        ToastUtils.showShort(errorResult.getError());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
                 UserResult userResult=response.body();
-                ToastUtils.showShort("注册ID："+userResult.getObjectId());
+                if (listener!=null){
+                listener.onRegisterSuccess(username,userResult.getObjectId());}
+                ToastUtils.showShort(R.string.register_success);
             }
 
             @Override
             public void onFailure(Call<UserResult> call, Throwable t) {
-                ToastUtils.showShort("注册失败");
+                //隐藏圈圈
+                mBtnRegister.setVisibility(View.VISIBLE);
+                //提示失败原因
+                ToastUtils.showShort(t.getMessage());
             }
         });
 
 
 
 
+    }
+    private onRegisterSuccessListener listener;
+    public interface onRegisterSuccessListener{
+        void onRegisterSuccess(String username,String objectId);
+    }
+    public void setRegisterListener(onRegisterSuccessListener listener){
+        this.listener=listener;
     }
 
 }

@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 
 import com.foxconn.norman.videonews.Bobmapi.other.BombClient;
+import com.foxconn.norman.videonews.Bobmapi.result.ErrorResult;
 import com.foxconn.norman.videonews.Bobmapi.result.UserResult;
 import com.foxconn.norman.videonews.Commons.ToastUtils;
 import com.foxconn.norman.videonews.R;
@@ -59,7 +60,7 @@ public class LoginFragment extends DialogFragment{
 
     @OnClick(R.id.btnLogin)
     public void onClick(){
-        String username = mEtUsername.getText().toString();
+        final String username = mEtUsername.getText().toString();
         String password = mEtPassword.getText().toString();
         //用户名和密码不能为空
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)){
@@ -72,22 +73,48 @@ public class LoginFragment extends DialogFragment{
         call.enqueue(new Callback<UserResult>() {
             @Override
             public void onResponse(Call<UserResult> call, retrofit2.Response<UserResult> response) {
-                UserResult userResult=response.body();
-                ToastUtils.showShort("注册用户名为："+userResult.getUsername());
+                //隐藏进度条
+                mBtnLogin.setVisibility(View.VISIBLE);
+                //登录未成功
+                if (!response.isSuccessful()){
+                    try {
+                        String error = response.errorBody().string();
+                        ErrorResult errorResult = new Gson().fromJson(error,ErrorResult.class);
+                        ToastUtils.showShort(errorResult.getError());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+                //登录成功
+                UserResult result = response.body();
+                if (listener!=null){
+                listener.loginSuccess(username,result.getObjectId());}
+                ToastUtils.showShort(R.string.login_success);
             }
 
             @Override
             public void onFailure(Call<UserResult> call, Throwable t) {
-                ToastUtils.showShort("登录失败");
+                //隐藏进度条
+                mBtnLogin.setVisibility(View.VISIBLE);
+                ToastUtils.showShort(t.getMessage());
             }
         });
 
 
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
+    }
+    public interface OnLoginSuccessListener{
+        void loginSuccess(String username,String objectId);
+    }
+    private OnLoginSuccessListener listener;
+    public void setLoginListener(OnLoginSuccessListener listener){
+        this.listener=listener;
     }
 }
