@@ -67,6 +67,8 @@ public class LoginFragment extends DialogFragment{
             ToastUtils.showShort(R.string.username_or_password_can_not_be_null);
             return;
         }
+        //显示进度条
+        mBtnLogin.setVisibility(View.GONE);
 
         // TODO: 2017/3/15 0015 登录的网络请求
        Call<UserResult> call=BombClient.getBombClient().getUserApi().Login(username,password);

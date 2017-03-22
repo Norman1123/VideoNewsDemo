@@ -14,13 +14,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import com.foxconn.norman.videonews.Bobmapi.other.UserManager;
 import com.foxconn.norman.videonews.R;
 
 /**
  * Created by Administrator on 2017/3/15 0015.
  */
 
-public class LikesFragment extends Fragment{
+public class LikesFragment extends Fragment implements LoginFragment.OnLoginSuccessListener,RegisterFragment.onRegisterSuccessListener{
     @BindView(R.id.tvUsername)
     TextView mTvUsername;
     @BindView(R.id.btnRegister)
@@ -55,6 +56,7 @@ public class LikesFragment extends Fragment{
             case R.id.btnRegister:
                 if (registerfragment == null){
                     registerfragment = new RegisterFragment();
+                    registerfragment.setRegisterListener(this);
                 }
                 registerfragment.show(getChildFragmentManager(),"Register Dialog");
                 break;
@@ -62,13 +64,56 @@ public class LikesFragment extends Fragment{
             case R.id.btnLogin:
                 if (loginfragment == null){
                     loginfragment = new LoginFragment();
+                    loginfragment.setLoginListener(this);
                 }
                 loginfragment.show(getChildFragmentManager(),"Login Dialog");
                 break;
             //退出登录
             case R.id.btnLogout:
-                Toast.makeText(getContext(), "退出登录（待实现）", Toast.LENGTH_SHORT).show();
+                //用户下线
+                userOffline();
                 break;
         }
+    }
+
+    @Override
+    public void loginSuccess(String username, String objectId) {
+        loginfragment.dismiss();
+        //用户上线
+        userOnLine(username,objectId);
+    }
+
+    @Override
+    public void onRegisterSuccess(String username, String objectId) {
+        //关闭注册的对话框
+        registerfragment.dismiss();
+        //用户上线
+        userOnLine(username,objectId);
+    }
+    //用户上线
+    private void userOnLine(String username,String objectId){
+        //更新UI
+        mBtnLogin.setVisibility(View.INVISIBLE);
+        mBtnRegister.setVisibility(View.INVISIBLE);
+        mBtnLogout.setVisibility(View.VISIBLE);
+        mDivider.setVisibility(View.INVISIBLE);
+        mTvUsername.setText(username);
+        // 存储用户信息
+        UserManager.getInstance().setUsername(username);
+        UserManager.getInstance().setObjectId(objectId);
+        //todo 刷新收藏列表
+    }
+
+    //用户下线
+    private void userOffline(){
+        //清除用户相关信息
+        UserManager.getInstance().clear();
+        //更新UI
+        mBtnLogin.setVisibility(View.VISIBLE);
+        mBtnRegister.setVisibility(View.VISIBLE);
+        mBtnLogout.setVisibility(View.INVISIBLE);
+        mDivider.setVisibility(View.VISIBLE);
+        mTvUsername.setText(R.string.tourist);
+        //todo 清空收藏列表
     }
 }
