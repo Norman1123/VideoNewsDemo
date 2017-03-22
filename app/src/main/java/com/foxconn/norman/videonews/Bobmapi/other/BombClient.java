@@ -23,6 +23,7 @@ public class BombClient {
     private OkHttpClient okHttpClient;
     private Retrofit retrofit;
     private UserApi userApi;
+    private NewsApi newsApi;
     private BombClient(){
       HttpLoggingInterceptor interceptor=new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -47,6 +48,12 @@ public class BombClient {
             userApi=retrofit.create(UserApi.class);
         }
         return userApi;
+    }
+    public NewsApi getNewsApi(){
+        if (newsApi==null){
+           newsApi=retrofit.create(NewsApi.class);
+        }
+        return newsApi;
     }
     public Call register(String username, String password){
         //构建一个请求的请求体（根据服务器要求）
