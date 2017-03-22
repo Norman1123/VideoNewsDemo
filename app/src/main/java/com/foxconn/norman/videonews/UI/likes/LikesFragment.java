@@ -32,6 +32,8 @@ public class LikesFragment extends Fragment implements LoginFragment.OnLoginSucc
     Button mBtnLogout;
     @BindView(R.id.divider)
     View mDivider;
+    @BindView(R.id.likesListView)
+    LikesListView likesListView;
 
     private View view;
 
@@ -101,7 +103,8 @@ public class LikesFragment extends Fragment implements LoginFragment.OnLoginSucc
         // 存储用户信息
         UserManager.getInstance().setUsername(username);
         UserManager.getInstance().setObjectId(objectId);
-        //todo 刷新收藏列表
+        //刷新收藏列表
+        likesListView.autoRefresh();
     }
 
     //用户下线
@@ -114,6 +117,7 @@ public class LikesFragment extends Fragment implements LoginFragment.OnLoginSucc
         mBtnLogout.setVisibility(View.INVISIBLE);
         mDivider.setVisibility(View.VISIBLE);
         mTvUsername.setText(R.string.tourist);
-        //todo 清空收藏列表
+        // 清空收藏列表
+        likesListView.clear();
     }
 }
